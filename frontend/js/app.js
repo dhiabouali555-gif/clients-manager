@@ -124,7 +124,29 @@ $('clients').onclick=e=>{let b=e.target.closest('[data-client]');if(b){selectedI
 $('searchClient').oninput=renderClients;
 $('products').onclick=e=>{let c=selected();if(!c)return;let edit=e.target.closest('[data-edit-product]'),del=e.target.closest('[data-delete-product]');if(edit){let i=+edit.dataset.edit,p=c.products[i];resetForms(1);const b=document.querySelector('#productForms .pform');b.querySelector('[data-f="link"]').value=p.link;b.querySelector('[data-f="name"]').value=p.name;b.querySelector('[data-f="variant"]').value=p.variant||'';b.querySelector('[data-f="qty"]').value=p.qty;b.querySelector('[data-f="status"]').value=p.status||'';b.querySelector('[data-f="details"]').value=p.details||'';editingIndex=i;$('saveForms').textContent='Enregistrer la modification';$('formTitle').textContent='Modifier le lien '+(i+1);document.getElementById('formTitle').scrollIntoView({behavior:'smooth',block:'center'})}if(del&&confirm('Supprimer ce lien produit ?')){c.products.splice(+del.dataset.deleteProduct,1);scheduleSave();renderDetail()}};
 $('deleteClient').onclick=()=>{let c=selected();if(c&&confirm('Supprimer cette fiche client et tous ses liens ?')){clients=clients.filter(x=>x.id!==selectedId);selectedId=null;scheduleSave();resetForms(1);renderDetail();renderClients()}};
-$('export').onclick=()=>{let a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(clients,null,2)],{type:'application/json'}));a.href=u;a.download='fiches-clients-produits.json';a.click();URL.revokeObjectURL(u)};
+$('export').onclick=()=>{
+  if(!clients.length){alert('Aucun client à exporter.');return}
+  const sep='='.repeat(52);
+  let t='FICHIERS CLIENTS — SHEIN\nExporté le '+new Date().toLocaleString('fr-FR')+'\n'+sep+'\n\n';
+  clients.forEach((c,ci)=>{
+    t+=(ci+1)+'. CLIENT : '+c.name+'\n';
+    t+='   Contact  : '+(c.contact||'—')+'\n';
+    t+='   Créé le  : '+c.created+'\n';
+    t+='   Notes    : '+(c.notes||'—')+'\n';
+    t+='   Produits : '+c.products.length+'\n';
+    c.products.forEach((p,i)=>{
+      t+='   ---\n   Produit '+(i+1)+' : '+p.name+'\n';
+      t+='   Lien     : '+p.link+'\n';
+      t+='   Variante : '+(p.variant||'—')+'\n';
+      t+='   Quantité : '+p.qty+'\n';
+      t+='   État     : '+(p.status||'—')+'\n';
+      t+='   Détails  : '+(p.details||'—')+'\n';
+    });
+    t+=sep+'\n\n';
+  });
+  let a=document.createElement('a'),u=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.href=u;a.download='fiches-clients.txt';a.click();URL.revokeObjectURL(u)
+};
+$('exportJson').onclick=()=>{let a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(clients,null,2)],{type:'application/json'}));a.href=u;a.download='fiches-clients-produits.json';a.click();URL.revokeObjectURL(u)};
 $('importBtn').onclick=()=>$('importFile').click();
 $('importFile').onchange=async e=>{try{let d=JSON.parse(await e.target.files[0].text());if(!Array.isArray(d))throw 0;clients=d;selectedId=null;scheduleSave();resetForms(1);renderDetail();renderClients();alert('Sauvegarde importée.')}catch{alert('Fichier JSON invalide.')}e.target.value=''};
 loadState().then(()=>{resetForms(1);renderClients();renderDetail()});
