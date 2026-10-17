@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clients & liens produits</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main>
+<span class="tag">CARNET CLIENTS · SHEIN</span>
+<h1>Clients & liens produits</h1>
+<p>Crée une fiche pour chaque client, puis ajoute sous son nom tous les liens produits et les détails. Pas de prix, pas de paiements, pas de calculs.</p>
+<div class="layout">
+<section>
+<div class="panel"><h2>Ajouter un client</h2>
+<label for="clientName">Nom du client *</label><input id="clientName" placeholder="Ex. Amira">
+<label for="clientContact">Contact (optionnel)</label><input id="clientContact" placeholder="Instagram / téléphone">
+<label for="clientNotes">Notes sur le client (optionnel)</label><textarea id="clientNotes" placeholder="Préférences ou remarques..."></textarea>
+<button id="addClient">Créer le client</button></div>
+<div class="panel"><div class="row"><h2>Mes clients</h2><span class="count" id="clientCount">0 client</span></div>
+<input id="searchClient" placeholder="Rechercher un client...">
+<div id="clients" class="clientlist" style="margin-top:10px"></div>
+<div class="actions"><button class="secondary" id="export">Exporter sauvegarde JSON</button><button class="secondary" id="importBtn">Importer sauvegarde</button><input id="importFile" class="hidden" type="file" accept=".json,application/json"></div></div>
+</section>
+<section class="panel">
+<div id="noSelection" class="empty">Choisis un client à gauche ou crée-en un nouveau pour ajouter ses produits.</div>
+<div id="clientView" class="hidden">
+<div class="row"><div><h2 id="selectedName"></h2><div class="muted" id="selectedMeta"></div></div><button class="danger" id="deleteClient">Supprimer le client</button></div>
+<div class="details" id="selectedNotes"></div>
+<hr style="border:0;border-top:1px solid var(--border);margin:17px 0">
+<h2>Ajouter un lien produit</h2>
+<label for="productLink">Lien SHEIN / produit *</label><input id="productLink" type="url" placeholder="https://...">
+<div class="formgrid"><div><label for="productName">Nom du produit *</label><input id="productName" placeholder="Coque iPhone"></div><div><label for="productVariant">Couleur / modèle / taille</label><input id="productVariant" placeholder="Noir, iPhone 16 Pro..."></div></div>
+<div class="formgrid"><div><label for="productQty">Quantité souhaitée</label><input id="productQty" type="number" min="1" step="1" value="1"></div><div><label for="productStatus">État</label><input id="productStatus" placeholder="Ex. à confirmer"></div></div>
+<label for="productDetails">Autres détails</label><textarea id="productDetails" placeholder="Capture demandée, préférence, lien alternatif, taille exacte..."></textarea>
+<button id="addProduct">Ajouter à la fiche client</button><button class="secondary" id="clearProduct">Vider les champs</button>
+<hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
+<div class="row"><h2>Produits demandés</h2><span class="count" id="productCount">0 produit</span></div>
+<div class="row" style="justify-content:flex-start;margin:8px 0 12px"><label for="linkTarget" style="margin:0">Nombre de liens à ajouter</label><input id="linkTarget" type="number" min="1" max="20" value="1" style="width:90px"><button class="secondary" id="changeLinkCount" type="button">Changer le nombre</button></div>
+<div id="multiLinkForms"></div><div id="products"></div>
+</div></section></div>
+<p class="hint">Les données sont enregistrées automatiquement (backend + localStorage). Utilise « Exporter sauvegarde JSON » pour une copie de sécurité.</p>
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>

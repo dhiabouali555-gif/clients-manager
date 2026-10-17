@@ -1,0 +1,4 @@
+node_modules/
+backend/data/clients.json
+.DS_Store
+Thumbs.db
