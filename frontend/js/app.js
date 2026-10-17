@@ -124,27 +124,25 @@ $('clients').onclick=e=>{let b=e.target.closest('[data-client]');if(b){selectedI
 $('searchClient').oninput=renderClients;
 $('products').onclick=e=>{let c=selected();if(!c)return;let edit=e.target.closest('[data-edit-product]'),del=e.target.closest('[data-delete-product]');if(edit){let i=+edit.dataset.edit,p=c.products[i];resetForms(1);const b=document.querySelector('#productForms .pform');b.querySelector('[data-f="link"]').value=p.link;b.querySelector('[data-f="name"]').value=p.name;b.querySelector('[data-f="variant"]').value=p.variant||'';b.querySelector('[data-f="qty"]').value=p.qty;b.querySelector('[data-f="status"]').value=p.status||'';b.querySelector('[data-f="details"]').value=p.details||'';editingIndex=i;$('saveForms').textContent='Enregistrer la modification';$('formTitle').textContent='Modifier le lien '+(i+1);document.getElementById('formTitle').scrollIntoView({behavior:'smooth',block:'center'})}if(del&&confirm('Supprimer ce lien produit ?')){c.products.splice(+del.dataset.deleteProduct,1);scheduleSave();renderDetail()}};
 $('deleteClient').onclick=()=>{let c=selected();if(c&&confirm('Supprimer cette fiche client et tous ses liens ?')){clients=clients.filter(x=>x.id!==selectedId);selectedId=null;scheduleSave();resetForms(1);renderDetail();renderClients()}};
-$('export').onclick=()=>{
+$('exportPdf').onclick=()=>{
   if(!clients.length){alert('Aucun client à exporter.');return}
-  const sep='='.repeat(52);
-  let t='FICHIERS CLIENTS — SHEIN\nExporté le '+new Date().toLocaleString('fr-FR')+'\n'+sep+'\n\n';
+  let h='<h1>Fiches clients — SHEIN</h1><p class="pmeta">Exporté le '+new Date().toLocaleString('fr-FR')+' · '+clients.length+' client(s)</p>';
   clients.forEach((c,ci)=>{
-    t+=(ci+1)+'. CLIENT : '+c.name+'\n';
-    t+='   Contact  : '+(c.contact||'—')+'\n';
-    t+='   Créé le  : '+c.created+'\n';
-    t+='   Notes    : '+(c.notes||'—')+'\n';
-    t+='   Produits : '+c.products.length+'\n';
-    c.products.forEach((p,i)=>{
-      t+='   ---\n   Produit '+(i+1)+' : '+p.name+'\n';
-      t+='   Lien     : '+p.link+'\n';
-      t+='   Variante : '+(p.variant||'—')+'\n';
-      t+='   Quantité : '+p.qty+'\n';
-      t+='   État     : '+(p.status||'—')+'\n';
-      t+='   Détails  : '+(p.details||'—')+'\n';
-    });
-    t+=sep+'\n\n';
+    h+='<section class="pclient"><h2>'+(ci+1)+'. '+esc(c.name)+'</h2>';
+    h+='<p class="pinfo"><b>Contact :</b> '+(esc(c.contact)||'—')+' &nbsp;·&nbsp; <b>Créé le :</b> '+(esc(c.created)||'—')+'</p>';
+    if(c.notes) h+='<p class="pinfo"><b>Notes :</b> '+esc(c.notes)+'</p>';
+    if(c.products.length){
+      h+='<table><thead><tr><th>#</th><th>Produit</th><th>Lien</th><th>Variante</th><th>Qté</th><th>État</th><th>Détails</th></tr></thead><tbody>';
+      c.products.forEach((p,i)=>{h+='<tr><td>'+(i+1)+'</td><td>'+esc(p.name)+'</td><td class="purl">'+esc(p.link)+'</td><td>'+(esc(p.variant)||'—')+'</td><td>'+esc(p.qty)+'</td><td>'+(esc(p.status)||'—')+'</td><td>'+(esc(p.details)||'—')+'</td></tr>'});
+      h+='</tbody></table>';
+    } else h+='<p class="pinfo">Aucun produit.</p>';
+    h+='</section>';
   });
-  let a=document.createElement('a'),u=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.href=u;a.download='fiches-clients.txt';a.click();URL.revokeObjectURL(u)
+  $('printArea').innerHTML=h;
+  const oldTitle=document.title;
+  document.title='Fiches clients SHEIN';
+  window.print();
+  setTimeout(()=>{document.title=oldTitle},500);
 };
 $('exportJson').onclick=()=>{let a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(clients,null,2)],{type:'application/json'}));a.href=u;a.download='fiches-clients-produits.json';a.click();URL.revokeObjectURL(u)};
 $('importBtn').onclick=()=>$('importFile').click();

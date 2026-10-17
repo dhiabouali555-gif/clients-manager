@@ -21,7 +21,7 @@
 <div class="panel"><div class="row"><h2>Mes clients</h2><span class="count" id="clientCount">0 client</span></div>
 <input id="searchClient" placeholder="Rechercher un client...">
 <div id="clients" class="clientlist" style="margin-top:12px"></div>
-<div class="actions"><button class="secondary" id="export">Exporter lisible (.txt)</button><button class="secondary" id="exportJson">Sauvegarde (.json)</button><button class="secondary" id="importBtn">Importer JSON</button><input id="importFile" class="hidden" type="file" accept=".json,application/json"></div></div>
+<div class="actions"><button id="exportPdf">Exporter PDF</button><button class="secondary" id="exportJson">Sauvegarde (JSON)</button><button class="secondary" id="importBtn">Importer</button><input id="importFile" class="hidden" type="file" accept=".json,application/json"></div></div>
 </section>
 <section class="panel">
 <div id="noSelection" class="empty">Choisis un client à gauche ou crée-en un nouveau pour ajouter ses produits.</div>
@@ -42,6 +42,7 @@
 </div></section></div>
 <p class="hint">Les données sont enregistrées automatiquement (backend + localStorage). Utilise « Exporter JSON » pour une copie de sécurité.</p>
 </main>
+<div id="printArea"></div>
 <script src="js/app.js"></script>
 </body>
 </html>
